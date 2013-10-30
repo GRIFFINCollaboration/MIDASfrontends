@@ -727,19 +727,44 @@ INT hv_init(EQUIPMENT * pequipment)
    /*---- Create/Read settings ----*/
 
    /* Names */
+   /*  no good - pushes from the ODB back down onto the crate, want the other way!
+   //default names
    for (i = 0; i < hv_info->num_channels; i++)
       sprintf(hv_info->names + NAME_LENGTH * i, "Default%%CH %d", i);
+
+   //do some stuff if the names aren't defined in the ODB
    if (db_find_key(hDB, hv_info->hKeyRoot, "Settings/Names", &hKey) != DB_SUCCESS)
-      for (i = 0; i < hv_info->num_channels; i++)
-         device_driver(hv_info->driver[i], CMD_GET_LABEL,
-                       i - hv_info->channel_offset[i], hv_info->names + NAME_LENGTH * i);
+      for (i = 0; i < hv_info->num_channels; i++){
+         device_driver(hv_info->driver[i], CMD_GET_LABEL, i - hv_info->channel_offset[i], hv_info->names + NAME_LENGTH * i);
+      }
+
+   //populate hv_info->names with whatever's in the ODB
    db_merge_data(hDB, hv_info->hKeyRoot, "Settings/Names",
                  hv_info->names, NAME_LENGTH * hv_info->num_channels,
                  hv_info->num_channels, TID_STRING);
+
+   //push down to the crate?
    db_find_key(hDB, hv_info->hKeyRoot, "Settings/Names", &hKey);
    assert(hKey);
    db_open_record(hDB, hKey, hv_info->names, NAME_LENGTH * hv_info->num_channels,
                   MODE_READ, hv_update_label, pequipment);
+   */
+   //Rewrite to pull only from the crate; note this makes the channel names 
+   //read-only from MIDAS!  (good - don't mess my channel names).   
+   //get names from the crate
+   for (i = 0; i < hv_info->num_channels; i++){
+      device_driver(hv_info->driver[i], CMD_GET_LABEL, i - hv_info->channel_offset[i], hv_info->names + NAME_LENGTH * i);
+   }
+   
+   //write to ODB
+   db_find_key(hDB, hv_info->hKeyRoot, "Settings/Names", &hKey);
+   assert(hKey);
+   db_open_record(hDB, hKey, hv_info->names, NAME_LENGTH * hv_info->num_channels,
+                  MODE_WRITE, NULL, pequipment);
+
+   
+
+   
 
    /* Update threshold */
    validate_odb_array(hDB, hv_info, "Settings/Update Threshold Measured", 0.5, CMD_GET_THRESHOLD, 
