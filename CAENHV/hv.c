@@ -757,15 +757,16 @@ INT hv_init(EQUIPMENT * pequipment)
    }
    
    //write to ODB
+   if (db_find_key(hDB, hv_info->hKeyRoot, "Settings/Names", &hKey) != DB_SUCCESS)
+       db_merge_data(hDB, hv_info->hKeyRoot, "Settings/Names",
+                     hv_info->names, NAME_LENGTH * hv_info->num_channels,
+                     hv_info->num_channels, TID_STRING);
    db_find_key(hDB, hv_info->hKeyRoot, "Settings/Names", &hKey);
    assert(hKey);
    db_open_record(hDB, hKey, hv_info->names, NAME_LENGTH * hv_info->num_channels,
                   MODE_WRITE, NULL, pequipment);
 
    
-
-   
-
    /* Update threshold */
    validate_odb_array(hDB, hv_info, "Settings/Update Threshold Measured", 0.5, CMD_GET_THRESHOLD, 
                       hv_info->update_threshold, NULL, NULL);
