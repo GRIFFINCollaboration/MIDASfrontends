@@ -24,7 +24,7 @@
 /*-- Globals -------------------------------------------------------*/
 
 /* The frontend name (client name) as seen by other MIDAS clients   */
-char *frontend_name = "GRIFClk Frontend";
+char *frontend_name = "GRIF-Clk0 Frontend";
 /* The frontend file name, don't change it */
 char *frontend_file_name = __FILE__;
 
@@ -47,13 +47,14 @@ INT event_buffer_size = 10 * 10000;
 
 /* device driver list */
 DEVICE_DRIVER mscb_driver[] = {
-   {"SCS2001", mscbdev, 0, NULL, DF_INPUT | DF_MULTITHREAD},
+   //{"SCS2001", mscbdev, 0, NULL, DF_INPUT | DF_MULTITHREAD},
+   {"SCS2001", mscbdev, 0, NULL, DF_OUTPUT | DF_PRIO_DEVICE | DF_MULTITHREAD},   
    {""}
 };
 
 EQUIPMENT equipment[] = {
 
-   {"GRIFClk",              /* equipment name */
+   {"GRIF-Clk0",              /* equipment name */
     {10, 0,                     /* event ID, trigger mask */
      "SYSTEM",                  /* event buffer */
      EQ_SLOW,                   /* equipment type */
@@ -163,58 +164,60 @@ INT frontend_init()
 
    /*---- set correct ODB device addresses ----*/
 
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 0, "ClockEnB", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 1, "Master", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 2, "SyncSel", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 3, "FanSel", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 4, "RefSel", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 5, "ExtClk", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 6, "ExtSync", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 7, "SATAClk", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 8, "SATASync", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 9, "ch0_high", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 10, "ch0_low", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 11, "ch0_byp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 12, "ch0_ph", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 13, "ch1_high", 0.1); 
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 14, "ch1_low", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 15, "ch1_byp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 16, "ch1_ph", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 17, "ch2_high", 0.1); 
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 18, "ch2_low", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 19, "ch2_byp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 20, "ch2_ph", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 21, "ch3_high", 0.1); 
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 22, "ch3_low", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 23, "ch3_byp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 24, "ch3_ph", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 25, "ch4_high", 0.1); 
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 26, "ch4_low", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 27, "ch4_byp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 28, "ch4_ph", 0.1);   
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 29, "ch5_high", 0.1); 
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 30, "ch5_low", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 31, "ch5_byp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 32, "ch5_ph", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 33, "ch6_high", 0.1); 
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 34, "ch6_low", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 35, "ch6_byp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 36, "ch6_ph", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 37, "ch7_high", 0.1); 
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 38, "ch7_low", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 39, "ch7_byp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 40, "ch7_ph", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 41, "CSAC_ena", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 42, "CSAC_sta", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 43, "CSAC_mod", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 44, "CSAC_air", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 45, "CSAC_pwr", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 46, "CSAC_tcx", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 47, "CSAC_lsr", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 48, "CSAC_htr", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 49, "CSAC_tmp", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 50, "CSAC_sn", 0.1);
-   mscb_define("mscb571.triumf.ca", "GRIFclk", "SCS2001", mscb_driver, 1, 51, "CSAC_ver", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 0, "ClockEnB", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 1, "Master", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 2, "SyncSel", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 3, "FanSel", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 4, "RefSel", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 5, "ExtClk", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 6, "ExtSync", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 7, "SATAClk", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 8, "SATASync", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 9, "SyncTmeS", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 10, "SyncTmeE", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 11, "ch0_high", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 12, "ch0_low", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 13, "ch0_byp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 14, "ch0_ph", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 15, "ch1_high", 0.1); 
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 16, "ch1_low", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 17, "ch1_byp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 18, "ch1_ph", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 19, "ch2_high", 0.1); 
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 20, "ch2_low", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 21, "ch2_byp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 22, "ch2_ph", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 23, "ch3_high", 0.1); 
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 24, "ch3_low", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 25, "ch3_byp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 26, "ch3_ph", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 27, "ch4_high", 0.1); 
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 28, "ch4_low", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 29, "ch4_byp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 30, "ch4_ph", 0.1);   
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 31, "ch5_high", 0.1); 
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 32, "ch5_low", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 33, "ch5_byp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 34, "ch5_ph", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 35, "ch6_high", 0.1); 
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 36, "ch6_low", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 37, "ch6_byp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 38, "ch6_ph", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 39, "ch7_high", 0.1); 
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 40, "ch7_low", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 41, "ch7_byp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 42, "ch7_ph", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 43, "CSAC_ena", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 44, "CSAC_sta", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 45, "CSAC_mod", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 46, "CSAC_air", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 47, "CSAC_pwr", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 48, "CSAC_tcx", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 49, "CSAC_lsr", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 50, "CSAC_htr", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 51, "CSAC_tmp", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 52, "CSAC_sn", 0.1);
+   mscb_define("mscb571.triumf.ca", "GRIF-Clk0", "SCS2001", mscb_driver, 1, 53, "CSAC_ver", 0.1);
    return CM_SUCCESS;
 }
 
