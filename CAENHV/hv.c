@@ -766,7 +766,6 @@ INT hv_init(EQUIPMENT * pequipment)
    db_open_record(hDB, hKey, hv_info->names, NAME_LENGTH * hv_info->num_channels,
                   MODE_WRITE, NULL, pequipment);
 
-   
    /* Update threshold */
    validate_odb_array(hDB, hv_info, "Settings/Update Threshold Measured", 0.5, CMD_GET_THRESHOLD, 
                       hv_info->update_threshold, NULL, NULL);
@@ -804,7 +803,7 @@ INT hv_init(EQUIPMENT * pequipment)
                       hv_info->chState, hv_set_chState, pequipment);
 
    /* Crate Map */
-   validate_odb_array_bool(hDB, hv_info, "Settings/CrateMap", 'n', CMD_GET_CRATEMAP,
+   validate_odb_array_bool(hDB, hv_info, "Settings/Devices/sy2527/DD/crateMap", 'n', CMD_GET_CRATEMAP,
                       hv_info->crateMap, hv_set_crateMap, pequipment);
 
    /*---- Create/Read variables ----*/
@@ -909,8 +908,10 @@ INT hv_init(EQUIPMENT * pequipment)
    db_set_record(hDB, hKey, hv_info->rampdown_speed, hv_info->num_channels * sizeof(float), 0);
    db_find_key(hDB, hv_info->hKeyRoot, "Settings/ChState", &hKey);
    db_set_record(hDB, hKey, hv_info->chState, hv_info->num_channels * sizeof(DWORD), 'n');
-   db_find_key(hDB, hv_info->hKeyRoot, "Settings/CrateMap", &hKey);  
-   db_set_record(hDB, hKey, hv_info->crateMap, hv_info->num_channels * sizeof(DWORD), 'n');
+   //db_find_key(hDB, hv_info->hKeyRoot, "Settings/CrateMap", &hKey);  
+   //db_set_record(hDB, hKey, hv_info->crateMap, hv_info->num_channels * sizeof(DWORD), 'n');
+   db_find_key(hDB, hv_info->hKeyRoot, "Settings/Devices/sy2527/DD/crateMap", &hKey);
+   db_set_record(hDB, hKey, hv_info->crateMap, sizeof(DWORD), 'n');
 
    /*--- open hotlink to HV demand values ----*/
    db_open_record(hDB, hv_info->hKeyDemand, hv_info->demand,

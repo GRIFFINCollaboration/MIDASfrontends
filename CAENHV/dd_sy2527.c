@@ -42,13 +42,15 @@ typedef struct
   char ip[32];			// IP# for network access
   int linktype;			// Connection type (0:TCP/IP, 1:, 2:)
   int begslot;			// First slot# belonging to this experiment
+  int crateMap;			// integer code describing number of slots and size of each card 
 } DDSY2527_SETTINGS;
 
 #define DDSY2527_SETTINGS_STR "\
 System Name = STRING : [32] sy2527\n\
-IP = STRING : [32] 142.90.102.110\n\
+IP = STRING : [32] 142.90.127.157\n\
 LinkType = INT : 0\n\
-First Slot = INT : 1\n\
+First Slot = INT : 0\n\
+crateMap = INT : 0\n\
 "
 
 /* following structure contains private variables to the device
@@ -111,8 +113,8 @@ INT dd_sy2527_init (HNDLE hkey, void **pinfo, WORD channels,
   ret = db_get_record (hDB, hkeydd, &info->dd_sy2527_settings, &size, 0);
 
   //  Connect to device
-  strcpy (username, "xxxxxx");
-  strcpy (passwd, "xxxxxx");
+  strcpy (username, "user");
+  strcpy (passwd, "user");
   DevName = info->dd_sy2527_settings.name;
   ret =
     CAENHVInitSystem (DevName, info->dd_sy2527_settings.linktype,
@@ -441,6 +443,7 @@ INT dd_sy2527_Label_set (DDSY2527_INFO * info, WORD channel, char *label)
   if (strlen (label) < MAX_CH_NAME)
   {
     ret = dd_sy2527_Name_set (info, 1, channel, label);
+
     return ret;
   }
   else
@@ -496,7 +499,6 @@ INT dd_sy2527_Name_get (DDSY2527_INFO * info, WORD nchannel, WORD channel,
     cm_msg (MERROR, "Name Set", "GetChName returns %d", ret);
   }
 
-  //cm_msg (MINFO, "Name Set", "%s", chnamelist);
   return ret;
 }
 
@@ -510,7 +512,6 @@ INT dd_sy2527_get (DDSY2527_INFO * info, WORD channel, float *pvalue)
 
   ret = dd_sy2527_fParam_get (info, 1, channel, "VMon", pvalue);
   return ret == 0 ? FE_SUCCESS : 0;
-
 }
 
 /*----------------------------------------------------------------------------*/
