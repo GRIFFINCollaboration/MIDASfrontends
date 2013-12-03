@@ -46,7 +46,7 @@ typedef struct {
    float *rampdown_speed;
    float *trip_time;
    DWORD *chState;
-   DWORD *crateMap;
+   INT   *crateMap;
 
    /* mirror arrays */
    float *demand_mirror;
@@ -608,6 +608,24 @@ void validate_odb_array_bool(HNDLE hDB, HV_INFO *hv_info, char *path, double def
                   callback, pequipment);
 }
 
+void validate_odb_int(HNDLE hDB, HV_INFO *hv_info, char *path, double default_value, int cmd,
+                        int *target, void (*callback)(INT,INT,void *) ,EQUIPMENT *pequipment)
+{
+   int i;
+   HNDLE hKey;
+
+   for (i = 0; i < 1; i++)
+      target[i] = (INT)default_value;
+   if (db_find_key(hDB, hv_info->hKeyRoot, path, &hKey) != DB_SUCCESS)
+      for (i = 0; i < 1; i++){
+         device_driver(hv_info->driver[i], cmd, i - hv_info->channel_offset[i], target + i);
+      }
+   db_merge_data(hDB, hv_info->hKeyRoot, path, target, sizeof(INT), 1, TID_INT);
+   db_find_key(hDB, hv_info->hKeyRoot, path, &hKey);
+   assert(hKey);
+   db_open_record(hDB, hKey, target, sizeof(INT), MODE_READ,callback, pequipment);
+}
+
 /*------------------------------------------------------------------*/
 
 INT hv_init(EQUIPMENT * pequipment)
@@ -671,7 +689,7 @@ INT hv_init(EQUIPMENT * pequipment)
    hv_info->rampdown_speed = (float *) calloc(hv_info->num_channels, sizeof(float));
    hv_info->trip_time = (float *) calloc(hv_info->num_channels, sizeof(float));
    hv_info->chState = (DWORD *) calloc(hv_info->num_channels, sizeof(DWORD));
-   hv_info->crateMap = (DWORD *) calloc(hv_info->num_channels, sizeof(DWORD));
+   hv_info->crateMap = (INT *) calloc(hv_info->num_channels, sizeof(INT));
 
    hv_info->demand_mirror = (float *) calloc(hv_info->num_channels, sizeof(float));
    hv_info->measured_mirror = (float *) calloc(hv_info->num_channels, sizeof(float));
@@ -803,7 +821,7 @@ INT hv_init(EQUIPMENT * pequipment)
                       hv_info->chState, hv_set_chState, pequipment);
 
    /* Crate Map */
-   validate_odb_array_bool(hDB, hv_info, "Settings/Devices/sy2527/DD/crateMap", 'n', CMD_GET_CRATEMAP,
+   validate_odb_int(hDB, hv_info, "Settings/Devices/sy2527/DD/crateMap", 'n', CMD_GET_CRATEMAP,
                       hv_info->crateMap, hv_set_crateMap, pequipment);
 
    /*---- Create/Read variables ----*/
@@ -908,10 +926,8 @@ INT hv_init(EQUIPMENT * pequipment)
    db_set_record(hDB, hKey, hv_info->rampdown_speed, hv_info->num_channels * sizeof(float), 0);
    db_find_key(hDB, hv_info->hKeyRoot, "Settings/ChState", &hKey);
    db_set_record(hDB, hKey, hv_info->chState, hv_info->num_channels * sizeof(DWORD), 'n');
-   //db_find_key(hDB, hv_info->hKeyRoot, "Settings/CrateMap", &hKey);  
-   //db_set_record(hDB, hKey, hv_info->crateMap, hv_info->num_channels * sizeof(DWORD), 'n');
    db_find_key(hDB, hv_info->hKeyRoot, "Settings/Devices/sy2527/DD/crateMap", &hKey);
-   db_set_record(hDB, hKey, hv_info->crateMap, sizeof(DWORD), 'n');
+   db_set_record(hDB, hKey, hv_info->crateMap, sizeof(INT), 'n');
 
    /*--- open hotlink to HV demand values ----*/
    db_open_record(hDB, hv_info->hKeyDemand, hv_info->demand,
