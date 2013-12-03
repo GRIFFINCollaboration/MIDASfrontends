@@ -119,8 +119,8 @@ INT dd_sy2527_init (HNDLE hkey, void **pinfo, WORD channels,
   ret =
     CAENHVInitSystem (DevName, info->dd_sy2527_settings.linktype,
     info->dd_sy2527_settings.ip, username, passwd);
-  cm_msg (MINFO, "dd_sy2527", "device name: %s link type: %d ip: %s user: %s pass: %s",
-    DevName, info->dd_sy2527_settings.linktype, info->dd_sy2527_settings.ip, username, passwd);
+  //cm_msg (MINFO, "dd_sy2527", "device name: %s link type: %d ip: %s user: %s pass: %s",
+  //  DevName, info->dd_sy2527_settings.linktype, info->dd_sy2527_settings.ip, username, passwd);
   cm_msg (MINFO, "dd_sy2527", "CAENHVInitSystem: %s  (num. %d)",
     CAENHVGetError (DevName), ret);
 
@@ -597,13 +597,7 @@ INT dd_sy2527_chState_get (DDSY2527_INFO * info, WORD channel, DWORD *pvalue)
 }
 
 /*----------------------------------------------------------------------------*/
-INT dd_sy2527_crateMap_set (DDSY2527_INFO * info, WORD channel, DWORD *pvalue)
-{  
-  return FE_SUCCESS;
-}
-
-/*----------------------------------------------------------------------------*/
-INT dd_sy2527_crateMap_get (DDSY2527_INFO * info, WORD channel, DWORD *dummy)
+INT dd_sy2527_crateMap_get (DDSY2527_INFO * info, WORD channel, INT *dummy)
 {
   unsigned short NrOfSlot, *NrOfChList, *SerNumList;
   char *ModelList, *DescriptionList;
@@ -644,20 +638,6 @@ INT dd_sy2527_crateMap_get (DDSY2527_INFO * info, WORD channel, DWORD *dummy)
 
   return FE_SUCCESS;
 }
-/*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-//Return number of channels in a given slot:
-int howBig(DDSY2527_INFO * info, int slot){
-
-  unsigned short NrOfSlot, *NrOfChList, *SerNumList;
-  char *ModelList, *DescriptionList;
-  unsigned char *FmwRelMinList, *FmwRelMaxList;
-
-  CAENHVGetCrateMap(info->dd_sy2527_settings.name, &NrOfSlot, &NrOfChList, &ModelList, &DescriptionList, &SerNumList, &FmwRelMinList, &FmwRelMaxList);
-  
-  return NrOfChList[slot];
-  
-}
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
 /*----------------------------------------------------------------------------*/
 
 INT dd_sy2527_chStatus_get (DDSY2527_INFO * info, WORD channel, DWORD *pvalue)
@@ -881,6 +861,7 @@ INT dd_sy2527 (INT cmd, ...)
   char *label;
   float value, *pvalue;
   void *info, *bd;
+  INT *pint;
 
   va_start (argptr, cmd);
   status = FE_SUCCESS;
@@ -957,20 +938,12 @@ INT dd_sy2527 (INT cmd, ...)
     status = dd_sy2527_chState_get (info, channel, pstate);
     break;
 
-  case CMD_SET_CRATEMAP:
-    info = va_arg (argptr, void *);
-    channel = (WORD) va_arg(argptr, INT);
-    state = (DWORD)va_arg(argptr, DWORD);
-    status = dd_sy2527_crateMap_set (info, channel, &state);
-    break;
-
   case CMD_GET_CRATEMAP:
     info = va_arg (argptr, void *);
     channel = (WORD) va_arg (argptr, INT);
-    pstate = (DWORD *) va_arg (argptr, DWORD *);
-    status = dd_sy2527_crateMap_get (info, channel, pstate);
+    pint = (INT *) va_arg (argptr, INT *);
+    status = dd_sy2527_crateMap_get (info, channel, pint);
     break;
-
 
   case CMD_GET_STATUS:
     info = va_arg (argptr, void *);

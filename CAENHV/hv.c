@@ -549,25 +549,6 @@ void hv_set_chState(INT hDB, INT hKey, void *info)
 
 /*------------------------------------------------------------------*/
    
-void hv_set_crateMap(INT hDB, INT hKey, void *info)
-{
-   INT i;
-   HV_INFO *hv_info;
-   EQUIPMENT *pequipment;
-   
-   pequipment = (EQUIPMENT *) info;
-   hv_info = (HV_INFO *) pequipment->cd_info;
-   
-   for (i = 0; i < hv_info->num_channels; i++){
-   
-      device_driver(hv_info->driver[i], CMD_SET_CRATEMAP, i - hv_info->channel_offset[i], hv_info->crateMap[i] );
-   }
-   
-   pequipment->odb_in++;
-}
-
-/*------------------------------------------------------------------*/
-
 void validate_odb_array(HNDLE hDB, HV_INFO *hv_info, char *path, double default_value, int cmd, 
                         float *array, void (*callback)(INT,INT,void *) ,EQUIPMENT *pequipment)
 {
@@ -822,7 +803,7 @@ INT hv_init(EQUIPMENT * pequipment)
 
    /* Crate Map */
    validate_odb_int(hDB, hv_info, "Settings/Devices/sy2527/DD/crateMap", 'n', CMD_GET_CRATEMAP,
-                      hv_info->crateMap, hv_set_crateMap, pequipment);
+                      hv_info->crateMap, NULL, pequipment);
 
    /*---- Create/Read variables ----*/
 
@@ -888,8 +869,6 @@ INT hv_init(EQUIPMENT * pequipment)
                                 i - hv_info->channel_offset[i], hv_info->rampdown_speed[i]);
          status = device_driver(hv_info->driver[i], CMD_SET_CHSTATE,
                                 i - hv_info->channel_offset[i], hv_info->chState[i]);
-         status = device_driver(hv_info->driver[i], CMD_SET_CRATEMAP,
-                                i - hv_info->channel_offset[i], hv_info->crateMap[i]);
       } else {
          status = device_driver(hv_info->driver[i], CMD_GET_DEMAND,
                                 i - hv_info->channel_offset[i], hv_info->demand + i);

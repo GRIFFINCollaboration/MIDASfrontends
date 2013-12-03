@@ -723,8 +723,7 @@ Slow control device driver commands */
 #define CMD_SET_RAMPDOWN             CMD_SET_FIRST+4
 #define CMD_SET_TRIP_TIME            CMD_SET_FIRST+5
 #define CMD_SET_CHSTATE              CMD_SET_FIRST+6
-#define CMD_SET_CRATEMAP             CMD_SET_FIRST+7
-#define CMD_SET_LAST                 CMD_SET_FIRST+7 /* update this if you add new commands */
+#define CMD_SET_LAST                 CMD_SET_FIRST+6 /* update this if you add new commands */
 
 #define CMD_GET_FIRST                CMD_SET_LAST+1  /* multithreaded get commands */
 #define CMD_GET                      CMD_GET_FIRST   // = 19
