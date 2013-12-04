@@ -206,6 +206,12 @@ typedef INT midas_thread_t;
 #pragma warning( disable: 4996)
 #endif
 
+#if defined __GNUC__
+#define MATTRPRINTF(a, b) __attribute__ ((format (printf, a, b)))
+#else
+#define MATTRPRINTF(a, b)
+#endif
+
 /* mutex definitions */
 #if defined(OS_WINNT)
 typedef HANDLE MUTEX_T;
@@ -739,7 +745,7 @@ Slow control device driver commands */
 #define CMD_GET_CURRENT_LIMIT        CMD_GET_DIRECT+2
 #define CMD_GET_RAMPUP               CMD_GET_DIRECT+3
 #define CMD_GET_RAMPDOWN             CMD_GET_DIRECT+4
-#define CMD_GET_TRIP_TIME            CMD_GET_DIRECT+5 
+#define CMD_GET_TRIP_TIME            CMD_GET_DIRECT+5
 #define CMD_GET_CHSTATE              CMD_GET_DIRECT+6
 #define CMD_GET_CRATEMAP             CMD_GET_DIRECT+7
 #define CMD_GET_DIRECT_LAST          CMD_GET_DIRECT+7 /* update this if you add new commands ! */
@@ -1683,10 +1689,8 @@ extern "C" {
    void EXPRT cm_ack_ctrlc_pressed();
 
    INT EXPRT cm_set_msg_print(INT system_mask, INT user_mask, int (*func) (const char *));
-   INT EXPRT cm_msg(INT message_type, const char *filename, INT line,
-                    const char *routine, const char *format, ...);
-   INT EXPRT cm_msg1(INT message_type, const char *filename, INT line,
-                     const char *facility, const char *routine, const char *format, ...);
+   INT EXPRT cm_msg(INT message_type, const char *filename, INT line, const char *routine, const char *format, ...) MATTRPRINTF(5,6);
+   INT EXPRT cm_msg1(INT message_type, const char *filename, INT line, const char *facility, const char *routine, const char *format, ...) MATTRPRINTF(6,7);
    INT EXPRT cm_msg_flush_buffer();
    INT EXPRT cm_msg_register(void (*func)
                               (HNDLE, HNDLE, EVENT_HEADER *, void *));
@@ -1814,8 +1818,12 @@ extern "C" {
                             const char *string_name, BOOL append);
    INT EXPRT db_save_xml(HNDLE hDB, HNDLE hKey, const char *file_name);
    INT EXPRT db_copy_xml(HNDLE hDB, HNDLE hKey, char *buffer, INT * buffer_size);
+
    INT EXPRT db_save_json(HNDLE hDB, HNDLE hKey, const char *file_name);
-   INT EXPRT db_copy_json(HNDLE hDB, HNDLE hKey, char **buffer, int *buffer_size, int *buffer_end, int save_keys, int follow_links);
+   INT EXPRT db_copy_json(HNDLE hDB, HNDLE hKey, char **buffer, int *buffer_size, int *buffer_end, int save_keys, int follow_links, int recurse);
+
+   INT EXPRT db_load_json(HNDLE hdb, HNDLE key_handle, const char *filename);
+   INT EXPRT db_paste_json(HNDLE hDB, HNDLE hKeyRoot, const char *buffer);
 
    INT EXPRT db_sprintf(char *string, const void *data, INT data_size, INT index, DWORD type);
    INT EXPRT db_sprintff(char *string, const char *format, const void *data, INT data_size, INT index, DWORD type);
@@ -1989,9 +1997,14 @@ extern "C" {
    void EXPRT open_subfolder(char *name);
    void EXPRT close_subfolder();
 
-   /*---- functions in strlcpy.c ----*/
+   /* we need a duplicate of mxml/strlcpy.h or nobody can use strlcpy() from libmidas.a */
+#ifndef HAVE_STRLCPY
+#ifndef _STRLCPY_H_
+#define _STRLCPY_H_
    size_t EXPRT strlcpy(char *dst, const char *src, size_t size);
    size_t EXPRT strlcat(char *dst, const char *src, size_t size);
+#endif
+#endif
 
 #ifdef __cplusplus
 }
