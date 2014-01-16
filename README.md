@@ -29,3 +29,10 @@ and launch with
     ./fesy2527-0 -D &
     
 and you should be good to go.  If you have more than one crate, copy the directory as many times as you need, and launch a frontend via this procedure for each.
+
+
+###GRIFClk
+
+The GRIFClk frontend handles the MSCB connection to the chip-scale atomic clocks used in GRIFFIN.  To set up, just replace all the instances of 'mscb571.triumf.ca' with the addess of the clock you want; launch a separate frontend for each clock.  For those without convenient search and replace tools handy, try something like
+
+    sed 's@mscb571.triumf.ca@computer.place.xx@g' mscb_fe.c > new_mscb_fe.c
