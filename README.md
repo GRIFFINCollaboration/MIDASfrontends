@@ -30,7 +30,7 @@ and launch with
     
 and you should be good to go.  If you have more than one crate, copy the directory as many times as you need, and launch a frontend via this procedure for each.
 
-###Troubleshooting
+###Troubleshooting / Required Hacks
  - `make` complains:
 ```
 fesy2527.c:54: error: ‘DF_LABELS_FROM_DEVICE’ undeclared here (not in a function)
@@ -57,6 +57,28 @@ These are all flags put in to manage the expanded HV driver functionality; look 
 ```
 
 If you got the error above, the last 5 lines are probably missing.  Add them in.
+
+ - Can't find CAEN header:
+
+```
+error: CAENHVWrapper.h: No such file or directory
+```
+
+This frontend relies on the CAEN wrappers, >= v5.22.  In the frontend's makefile, make sure you're pointing at the right place with something like
+```
+CAEN_DIR        = $(HOME)/packages/CAENHVWrapper-5.22/
+```
+
+(Also make sure you've done a `sudo make install` of these wrappers beforehand, using the 64 bit makefile).
+
+ - Variable redeclaration problems, along the lines of:
+```
+/home/griffin/packages/CAENHVWrapper-5.22//include/CAENHVWrapper.h:197: error: ‘ALARM’ redeclared as different kind of symbol
+/home/griffin/packages/midas/include/midas.h:1402: note: previous declaration of ‘ALARM’ was here
+/home/griffin/packages/CAENHVWrapper-5.22//include/CAENHVWrapper.h:229: error: expected identifier before numeric constant
+```
+
+Somebody was very bad, and didn't namespace their variables properly, causing a collision between CAEN and MIDAS of the sort seen above.  Until the powers that be fix this, an apparently functional hack-around is, in the relevant `typedef enum`s in `CAENHVWrapper.h`, change the variable names `ALARMS`, `SYNC` and `ASYNC` to `CAENALARMS`, `CAENSYNC` and `CAENASYNC` respectively.  Gross but effective?
 
 ##GRIFClk
 
