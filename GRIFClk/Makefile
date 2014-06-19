@@ -46,7 +46,8 @@ endif
 INC_DIR 	= $(MIDASSYS)/include
 LIB_DIR 	= $(MIDASSYS)/$(OS_DIR)-m64/lib
 DRV_DIR		= $(MIDASSYS)/drivers
-MSCB_DIR        = $(MIDASSYS)/mscb
+#MSCB_DIR        = $(MIDASSYS)/mscb
+MSCB_DIR        = $(MIDASSYS)/mexwrapper
 MXML_DIR        = $(MIDASSYS)/../mxml
 
 #-------------------------------------------------------------------
