@@ -85,3 +85,5 @@ Somebody was very bad, and didn't namespace their variables properly, causing a 
 The GRIFClk frontend handles the MSCB connection to the chip-scale atomic clocks used in GRIFFIN.  To set up, just replace all the instances of 'mscb571.triumf.ca' with the addess of the clock you want; launch a separate frontend for each clock.  For those without convenient search and replace tools handy, try something like
 
     sed 's@mscb571.triumf.ca@computer.place.xx@g' mscb_fe.c > new_mscb_fe.c
+    
+Also note that the frontends and ODB Equipment directories are expected to be labeled `GRIF-Clk0` through `GRIF-Clk24`; replace all instances of the string `GRIF-Clk0` in `mscb_fe.c` with the appropriate label before compiling each.
